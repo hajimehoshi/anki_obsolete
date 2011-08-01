@@ -29,7 +29,7 @@ class Item(object):
         r = self._round
         days = math.ceil(2.5 ** (r - 1)) + \
             ((self._number + r) % (r * 2 - 1)) - r + 1
-        nextDate = (self._lastDate + datetime.timedelta(days=days)).date()
+        nextDate = self._lastDate + datetime.timedelta(days=days)
         return nextDate
 
 class Project(object):
@@ -67,6 +67,7 @@ class Project(object):
                 lastDateNode = itemNode.getElementsByTagName('last-date')[0]
                 lastDateStr = lastDateNode.firstChild.data
                 lastDate = datetime.datetime.strptime(lastDateStr, '%Y-%m-%d')
+                lastDate = datetime.date(lastDate.year, lastDate.month, lastDate.day)
                 item = Item(int(numberNode),
                             int(roundNode.firstChild.data),
                             lastDate)
@@ -79,11 +80,12 @@ def main(argv):
         return
     filepath = argv[1]
     project = Project(filepath)
+    today = datetime.date.today()
     print '{0} ({1})'.format(project.name, project.number)
-    print 'Today: {0}'.format(datetime.date.today().strftime('%Y-%m-%d'))
+    print 'Today: {0}'.format(today.strftime('%Y-%m-%d'))
     print
     digits = int(math.log10(project.number)) + 1
-    fmt = '{0} {1:0' + str(digits) + 'd}: {2}  {3}  {4}'
+    fmt = "\033[{0}m" + '{1:0' + str(digits) + 'd}: {2}  {3}  {4}'
     items = project.items
     items = sorted(items, key=lambda i: i.nextDate)
     for item in items:
@@ -91,11 +93,13 @@ def main(argv):
         round    = item.round
         lastDate = item.lastDate.strftime('%Y-%m-%d')
         nextDate = item.nextDate.strftime('%Y-%m-%d')
-        if item.nextDate <= datetime.date.today():
-            status = '*'
+        if item.lastDate == today:
+            color = "32;40"
+        elif item.nextDate <= today:
+            color = "31;40"
         else:
-            status = ' '
-        print fmt.format(status, number, round, lastDate, nextDate)
+            color = "0"
+        print fmt.format(color, number, round, lastDate, nextDate)
 
 if __name__ == '__main__':
     import sys
