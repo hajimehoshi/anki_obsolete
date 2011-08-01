@@ -76,7 +76,7 @@ class Project(object):
         return copy.copy(self._items)
 
 def main(argv):
-    if argv <= 1:
+    if len(argv) <= 1:
         return
     filepath = argv[1]
     project = Project(filepath)
