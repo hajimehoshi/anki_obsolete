@@ -39,30 +39,29 @@ class Project(object):
         self._items  = None
         import xml.dom.minidom
         dom = xml.dom.minidom.parse(filepath)
-        projectNode = dom.getElementsByTagName('project')[0]
-        self._nameNode   = projectNode.getElementsByTagName('name')[0]
-        self._numberNode = projectNode.getElementsByTagName('number')[0]
-        itemsNode = projectNode.getElementsByTagName('items')[0]
-        itemNodes = itemsNode.getElementsByTagName('item')
-        self._itemNodes = itemNodes
+        self._projectNode = dom.getElementsByTagName('project')[0]
 
     @property
     def name(self):
         if self._name is None:
-            self._name = self._nameNode.firstChild.data
+            nameNode = self._projectNode.getElementsByTagName('name')[0]
+            self._name = nameNode.firstChild.data
         return self._name
 
     @property
     def number(self):
         if self._number is None:
-            self._number = int(self._numberNode.firstChild.data)
+            numberNode = self._projectNode.getElementsByTagName('number')[0]
+            self._number = int(numberNode.firstChild.data)
         return self._number
 
     @property
     def items(self):
         if self._items is None:
+            itemsNode = self._projectNode.getElementsByTagName('items')[0]
+            itemNodes = itemsNode.getElementsByTagName('item')
             self._items = []
-            for itemNode in self._itemNodes:
+            for itemNode in itemNodes:
                 numberNode   = itemNode.getAttribute('number')
                 roundNode    = itemNode.getElementsByTagName('round')[0]
                 lastDateNode = itemNode.getElementsByTagName('last-date')[0]
