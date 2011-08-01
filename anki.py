@@ -94,9 +94,9 @@ def main(argv):
         lastDate = item.lastDate.strftime('%Y-%m-%d')
         nextDate = item.nextDate.strftime('%Y-%m-%d')
         if item.lastDate == today:
-            color = "32;40"
+            color = "32"
         elif item.nextDate <= today:
-            color = "31;40"
+            color = "31"
         else:
             color = "0"
         print fmt.format(color, number, round, lastDate, nextDate)
