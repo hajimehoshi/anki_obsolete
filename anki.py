@@ -88,6 +88,7 @@ def main(argv):
     fmt = "\033[{0}m" + '{1:0' + str(digits) + 'd}: {2}  {3}  {4}'
     items = project.items
     items = sorted(items, key=lambda i: i.nextDate)
+    roundSum = 0
     for item in items:
         number   = item.number
         round    = item.round
@@ -100,6 +101,9 @@ def main(argv):
         else:
             color = "0"
         print fmt.format(color, number, round, lastDate, nextDate)
+        roundSum += round
+    print
+    print "Sum of rounds: {0}".format(roundSum)
 
 if __name__ == '__main__':
     import sys
