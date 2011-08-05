@@ -103,6 +103,7 @@ def main(argv):
         print fmt.format(color, number, round, lastDate, nextDate)
         roundSum += round
     print
+    print "Sum of items: {0}".format(len(items))
     print "Sum of rounds: {0}".format(roundSum)
 
 if __name__ == '__main__':
