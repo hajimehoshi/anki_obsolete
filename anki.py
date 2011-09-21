@@ -81,6 +81,7 @@ def main(argv):
     filepath = argv[1]
     project = Project(filepath)
     today = datetime.date.today()
+    now = datetime.datetime.now()
     print '{0} ({1})'.format(project.name, project.number)
     print 'Today: {0}'.format(today.strftime('%Y-%m-%d'))
     print
@@ -88,22 +89,29 @@ def main(argv):
     fmt = "\033[{0}m" + '{1:0' + str(digits) + 'd}: {2}  {3}  {4}'
     items = project.items
     items = sorted(items, key=lambda i: i.nextDate)
+    itemSum = 0
     roundSum = 0
     for item in items:
-        number   = item.number
-        round    = item.round
-        lastDate = item.lastDate.strftime('%Y-%m-%d')
-        nextDate = item.nextDate.strftime('%Y-%m-%d')
+        number = item.number
+        round  = item.round
         if item.nextDate <= today:
-            color = "31"
-        elif item.lastDate == today:
-            color = "32"
+            color = "31" # Red
         else:
-            color = "0"
-        print fmt.format(color, number, round, lastDate, nextDate)
+            lastDate = item.lastDate
+            minDatetime = datetime.datetime(lastDate.year, lastDate.month, lastDate.day)
+            maxDatetime = minDatetime + datetime.timedelta(1, 0, 0, 0, 0, 6)
+            if minDatetime <= now and now < maxDatetime:
+                color = "32" # Green
+            else:
+                color = "0"
+        lastDateStr = item.lastDate.strftime('%Y-%m-%d')
+        nextDateStr = item.nextDate.strftime('%Y-%m-%d')
+        print fmt.format(color, number, round, lastDateStr, nextDateStr)
         roundSum += round
+        if 0 < item.round:
+            itemSum += 1
     print
-    print "Sum of items: {0}".format(len(items))
+    print "Sum of items: {0}".format(itemSum)
     print "Sum of rounds: {0}".format(roundSum)
 
 if __name__ == '__main__':
