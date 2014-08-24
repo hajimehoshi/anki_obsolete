@@ -94,12 +94,17 @@ def main(argv):
     for item in items:
         number = item.number
         round  = item.round
+        roundSum += round
+        if 0 < item.round:
+            itemSum += 1
+        if 5 <= round:
+            continue
         if item.nextDate <= today:
             color = "31" # Red
         else:
             lastDate = item.lastDate
             minDatetime = datetime.datetime(lastDate.year, lastDate.month, lastDate.day)
-            maxDatetime = minDatetime + datetime.timedelta(1, 0, 0, 0, 0, 6)
+            maxDatetime = minDatetime + datetime.timedelta(days=1, hours=6)
             if minDatetime <= now and now < maxDatetime:
                 color = "32" # Green
             else:
@@ -107,9 +112,6 @@ def main(argv):
         lastDateStr = item.lastDate.strftime('%Y-%m-%d')
         nextDateStr = item.nextDate.strftime('%Y-%m-%d')
         print fmt.format(color, number, round, lastDateStr, nextDateStr)
-        roundSum += round
-        if 0 < item.round:
-            itemSum += 1
     print
     print "Sum of items: {0}".format(itemSum)
     print "Sum of rounds: {0}".format(roundSum)
